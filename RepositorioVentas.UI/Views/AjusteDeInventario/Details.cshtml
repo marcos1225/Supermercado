@@ -1,0 +1,65 @@
+﻿@model RepositorioVentas.UI.Models.AjusteDeInventario
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Detalles del Ajuste</h1>
+
+<div>
+     
+    <hr />
+    <dl class="row">
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CantidadActual)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CantidadActual)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Ajuste)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Ajuste)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Tipo)
+        </dt>
+        <dd class="col-sm-10">
+            @{
+                string tipoTexto = string.Empty;
+                if (Model.Tipo == 1)
+                {
+                    tipoTexto = "Aumento";
+                }
+                else if (Model.Tipo == 2)
+                {
+                    tipoTexto = "Disminucion";
+                }
+                @tipoTexto
+            }
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Observaciones)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Observaciones)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Fecha)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Fecha)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.UserId)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.UserId)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Index">Volver a la Lista</a>
+</div>

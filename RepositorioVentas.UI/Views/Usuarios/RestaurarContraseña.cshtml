@@ -1,0 +1,87 @@
+﻿@model RepositorioVentas.UI.Models.Usuario
+
+@{
+    ViewData["Title"] = "Restaurar Contraseña";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link href="~/css/login.css" rel="stylesheet" />
+    <style>
+        body {
+            position: relative;
+            z-index: 0;
+        }
+
+        .blue-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: white;
+            opacity: 0.8;
+            z-index: -1;
+        }
+
+        .content-wrapper {
+            position: relative;
+            z-index: 1;
+        }
+
+        .navbar {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="blue-background"></div>
+    <div class="content-wrapper">
+        <h1 class="text-center">Restaurar Contraseña</h1>
+
+        <hr />
+
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <form asp-action="RestaurarContraseña" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <div class="form-group">
+                        <label asp-for="UserName">Usuario</label>
+                        <input asp-for="UserName" class="form-control" />
+                        <span asp-validation-for="UserName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="PasswordHash">Contraseña Nueva</label>
+                        <input type="password" id="password" asp-for="PasswordHash" class="form-control" />
+                        <span asp-validation-for="PasswordHash" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="PasswordHash">Confirmar Contraseña Nueva</label>
+                        <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" />
+                        <span id="confirmPasswordError" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="submit" value="Restaurar Contraseña" class="btn btn-primary" />
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="text-center mt-3">
+            <a asp-action="Index">Volver al inicio de sesión</a>
+        </div>
+    </div>
+
+    @section Scripts {
+        @{
+            await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        }
+    }
+</body>
+</html>

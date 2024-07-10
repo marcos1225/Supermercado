@@ -1,0 +1,167 @@
+﻿@model IEnumerable<RepositorioVentas.UI.Models.Inventario>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<style>
+    .yellow-button {
+        background-color: #FFD700;
+        color: #000000;
+        border: none;
+        padding: 10px 20px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 14px;
+        font-weight: bold;
+        cursor: pointer;
+        border-radius: 4px;
+        transition: background-color 0.3s ease;
+    }
+
+    .blue-button {
+        background-color: #007BFF;
+        color: #FFFFFF;
+        border: none;
+        padding: 10px 20px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 14px;
+        font-weight: bold;
+        cursor: pointer;
+        border-radius: 4px;
+        transition: background-color 0.3s ease;
+    }
+
+    .green-button {
+        background-color: #28a745;
+        color: #ffffff;
+        border: none;
+        padding: 10px 20px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 14px;
+        font-weight: bold;
+        cursor: pointer;
+        border-radius: 4px;
+    }
+
+    .yello-button {
+        background-color: #FFD700;
+        color: #000000;
+        border: none;
+        padding: 10px 20px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 14px;
+        font-weight: bold;
+        cursor: pointer;
+        border-radius: 4px;
+    }
+
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+        .table th,
+        .table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .table th {
+            background-color: #f5f5f5;
+            font-weight: bold;
+        }
+
+        .table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+</style>
+
+<h1>Inventario</h1>
+
+<form asp-controller="Inventario" asp-action="Index" method="get" style="text-align: left;">
+    <p>
+        Nombre: <input type="text" name="nombre" />
+        <input type="submit" value="Filtrar" class="yellow-button" />
+    </p>
+</form>
+
+<p>
+    <a asp-action="Create" class="blue-button">Registrar</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Nombre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Categoria)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Cantidad)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Precio)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nombre)
+                </td>
+                <td>
+                    @{
+                        string categoriaTexto = string.Empty;
+                        switch (item.Categoria)
+                        {
+                            case 1:
+                                categoriaTexto = "Clase A";
+                                break;
+                            case 2:
+                                categoriaTexto = "Clase B";
+                                break;
+                            case 3:
+                                categoriaTexto = "Clase C";
+                                break;
+                            default:
+                                categoriaTexto = "Sin categoría";
+                                break;
+                        }
+                    }
+                    @categoriaTexto
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Cantidad)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Precio)
+                </td>
+                <td>
+                    @Html.ActionLink("Editar", "Edit", new { Id = item.Id }, new { @class = "green-button" }) |
+                    @Html.ActionLink("Detalles", "Details", new { Id = item.Id }, new { @class = "yello-button" })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

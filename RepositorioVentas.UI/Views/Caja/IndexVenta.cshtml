@@ -1,0 +1,411 @@
+﻿@model IEnumerable<RepositorioVentas.UI.Models.Inventario>
+
+@{
+    ViewData["Title"] = "Ventas";
+}
+
+<h1>Informacion de la Venta</h1>
+
+<form asp-action="CreateVenta">
+
+    <div class="form-group">
+        <label for="NombreCliente" class="control-label">Nombre Del Cliente</label>
+        <input type="text" id="NombreCliente" name="NombreCliente" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label for="UserId" class="control-label">User Id</label>
+        <input type="text" id="UserId" name="UserId" class="form-control" readonly />
+    </div>
+
+    <div class="form-group">
+        <label for="IdAperturaDeCaja" class="control-label">Id Apertura De Caja</label>
+        <input type="text" id="IdAperturaDeCaja" name="IdAperturaDeCaja" class="form-control" readonly />
+    </div>
+
+    <div class="form-group" hidden>
+        <label for="Estado" class="control-label">Estado</label>
+        <input type="text" value="2" id="Estado" name="Estado" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label for="Fecha" class="control-label">Fecha</label>
+        <input type="date" id="Fecha" name="Fecha" class="form-control" readonly />
+    </div>
+
+    <hr>
+
+    <div class="form-group">
+        <label for="TipoDePago" class="control-label">Tipo De Pago</label>
+        <select id="TipoDePago" name="TipoDePago" class="form-control" required>
+            <option value="">Seleccione</option>
+            <option value="1">Efectivo</option>
+            <option value="2">Tarjeta</option>
+            <option value="3">SinpeMovil</option>
+        </select>
+    </div>
+
+    <hr>
+
+    <div class="form-group">
+        <labe for="PorcentajeDesCuento" class="control-label">Porcentaje De Monto Descuento </labe>
+        <input type="text" id="PorcentajeDesCuento" name="PorcentajeDesCuento" class="form-control" />
+    </div>
+
+    <hr>
+
+    <div>
+        <label for="SubTotal" class="control-label">SubTotal</label>
+        <input type="number" id="SubTotal" name="SubTotal" class="form-control" readonly />
+    </div>
+
+    <hr>
+
+    <div>
+        <label for="MontoDescuento" class="control-label">Monto De Descuento</label>
+        <input type="number" id="MontoDescuento" name="MontoDescuento" class="form-control" readonly />
+    </div>
+
+    <hr>
+
+    <div>
+        <label for="Total" class="control-label">Total</label>
+        <input type="number" id="Total" name="Total" class="form-control" readonly />
+    </div>
+
+    <hr>
+
+    <button id="btnEnviarDatos" class="btn btn-primary">Terminar Venta</button>
+
+    <hr>
+</form>
+
+<!-- Tabla secundaria para mostrar los productos agregados -->
+<h2>Productos Agregados</h2>
+
+<table id="tablaAgregados" class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Identificador</th>
+            <th>Nombre</th>
+            <th>Cantidad</th>
+            <th>Requeridos</th>
+            <th>Precio</th>
+            <th>Sub-Total</th>
+            <th>Decuento</th>
+            <th>Total</th>
+            <th>Eliminar</th>
+        </tr>
+    </thead>
+    <tbody name="filasAgregadas"></tbody>
+</table>
+
+
+<h1>Inventario</h1>
+
+<!-- Tabla principal -->
+<table id="tablaPrincipal" class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Nombre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Categoria)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Cantidad)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Precio)
+            </th>
+            <th>Requeridos</th>
+            <th>Decuento</th>
+            <th>Opciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nombre)
+                </td>
+                <td>
+                    @{
+                        string categoriaTexto = string.Empty;
+                        switch (item.Categoria)
+                        {
+                            case 1:
+                                categoriaTexto = "Clase A";
+                                break;
+                            case 2:
+                                categoriaTexto = "Clase B";
+                                break;
+                            case 3:
+                                categoriaTexto = "Clase C";
+                                break;
+                            default:
+                                categoriaTexto = "Sin categoría";
+                                break;
+                        }
+                    }
+                    @categoriaTexto
+                </td>
+                <td class="cantidad-actual">
+                    @Html.DisplayFor(modelItem => item.Cantidad)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Precio)
+                </td>
+
+                <td>
+                    <div>
+                        <button class="aumentar-btn" onclick="aumentar(this)">+</button>
+                        <input type="number" min="0" max="@item.Cantidad" value="0" class="requeridos-input" readonly />
+                        <button class="disminuir-btn" onclick="disminuir(this)">-</button>
+                    </div>
+                </td>
+
+
+                <td>
+                    <input type="number" min="0" max="100" value="0" class="MontoDescuento-input" />
+                </td>
+                <td>
+                    <button class="btn btn-primary agregar-btn">Agregar</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            url: '/Caja/ObtenerUserId',
+            type: 'GET',
+            success: function (response) {
+                $('#UserId').val(response);
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+            }
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            url: '/Caja/ObtenerIdCaja',
+            type: 'GET',
+            success: function (response) {
+                $('#IdAperturaDeCaja').val(response);
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+            }
+        });
+    });
+</script>
+
+
+<script>
+
+    function aumentar(button) {
+        var input = button.parentNode.querySelector('.requeridos-input');
+        var currentValue = parseInt(input.value);
+        var maxValue = parseInt(input.getAttribute('max'));
+
+        if (currentValue < maxValue) {
+            input.value = currentValue + 1;
+        }
+    }
+
+    function disminuir(button) {
+        var input = button.parentNode.querySelector('.requeridos-input');
+        var currentValue = parseInt(input.value);
+
+        if (currentValue > 0) {
+            input.value = currentValue - 1;
+        }
+    }
+
+    // Obtener la referencia
+    var agregarButtons = document.getElementsByClassName("agregar-btn");
+
+    //Variables
+    var SubTotal = 0;
+    var MontoDescuento = 0;
+    var Total = 0;
+    var id_inventario = 0;
+
+    // Crear una nueva fecha y obtener los componentes (año, mes y día)
+
+    var fechaInput = document.getElementById("Fecha");
+
+    var fechaActual = new Date();
+    var ano = fechaActual.getFullYear();
+    var mes = (fechaActual.getMonth() + 1).toString().padStart(2, "0");
+    var dia = fechaActual.getDate().toString().padStart(2, "0");
+    var fechaFormateada = ano + "-" + mes + "-" + dia;
+
+    fechaInput.value = fechaFormateada;
+
+    // Recorrer los botones y asignar el evento click
+    Array.from(agregarButtons).forEach(function (button) {
+        button.addEventListener("click", function () {
+
+            // Obtener los valores de la fila actual
+            var row = this.parentNode.parentNode;
+            var id = row.cells[0].innerText;
+            var nombre = row.cells[1].innerText;
+            var cantidad = parseInt(row.cells[3].innerText);
+            var requeridos = parseInt(row.getElementsByClassName("requeridos-input")[0].value);
+            var precio = parseFloat(row.cells[4].innerText);
+            var decuento = parseInt(row.getElementsByClassName("MontoDescuento-input")[0].value);
+
+
+            // Reducir la cantidad actual
+            var cantidadActualCell = row.getElementsByClassName("cantidad-actual")[0];
+            var cantidadActual = parseInt(cantidadActualCell.innerText);
+            cantidadActual -= requeridos;
+            cantidadActualCell.innerText = cantidadActual.toString();
+
+            // Dentro del evento click del botón "Agregar"
+            var requeridosInput = row.querySelector('.requeridos-input');
+            requeridosInput.setAttribute('max', cantidadActual.toString());
+            requeridosInput.value = "0";
+
+            // Calculos
+            var productoSubTotal = requeridos * precio;
+            SubTotal += productoSubTotal;
+
+            var decuentoSub = ((productoSubTotal * decuento) / 100);
+            MontoDescuento += decuentoSub;
+
+            var Totalsub = productoSubTotal - decuentoSub;
+            Total += Totalsub;
+
+            id_inventario = id_inventario + 1;
+
+            // Crear una nueva fila en la tabla secundaria
+            var tablaAgregados = document.getElementById("tablaAgregados");
+            var newRow = tablaAgregados.insertRow();
+            var IdCell = newRow.insertCell();
+            var IdentificaroCell = newRow.insertCell();
+            var nombreCell = newRow.insertCell();
+            var cantidadCell = newRow.insertCell();
+            var requeridosCell = newRow.insertCell();
+            var precioCell = newRow.insertCell();
+            var SubTotalCell = newRow.insertCell();
+            var decuentoCell = newRow.insertCell();
+            var TotalCell = newRow.insertCell();
+            var eliminarCell = newRow.insertCell();
+
+            // Asignar los valores a las celdas de la nueva fila
+            IdCell.innerText = id;
+            IdentificaroCell.innerText = id_inventario;
+            nombreCell.innerText = nombre;
+            requeridosCell.innerText = requeridos;
+            cantidadCell.innerText = cantidad;
+            precioCell.innerText = precio;
+            SubTotalCell.innerText = productoSubTotal;
+            decuentoCell.innerText = decuentoSub;
+            TotalCell.innerText = Totalsub;
+            eliminarCell.innerHTML = '<button class="btn btn-danger eliminar-btn">Eliminar</button>';
+
+            // Enviar datos del invenatario al controlador, para tener una lista de
+
+            var id_envio = id;
+            var requeridos_envio = requeridos;
+            var id_inventario_envio = id_inventario;
+            var precio_envio = precio;
+            var monto_envio = productoSubTotal;
+            var monto_descuento_envio = Totalsub;
+
+
+            $.ajax({
+                url: '/Caja/RegistroInventarioVentas',
+                type: 'POST',
+                data: {
+                    Id_Inventario: id_envio,
+                    Cantidad: requeridos_envio,
+                    Identificador_Ventas: id_inventario_envio,
+                    Precio: precio,
+                    Monto: monto_envio,
+                    MontoDescuento: monto_descuento_envio
+                },
+                success: function (response) {
+                    // Manejar la respuesta del controlador
+                    console.log(response);
+                },
+                error: function (xhr, status, error) {
+                    // Manejar los errores
+                    console.error(error);
+                }
+            });
+
+            // Asignar el evento click al botón "Eliminar"
+            eliminarCell.getElementsByClassName("eliminar-btn")[0].addEventListener("click", function () {
+
+                // Restar el SubTotal correspondiente
+                SubTotal -= productoSubTotal;
+                Total -= Totalsub;
+                MontoDescuento -= decuentoSub;
+
+                // Reducir la cantidad actual
+                var cantidadActualCell = row.getElementsByClassName("cantidad-actual")[0];
+                var cantidadActual = parseInt(cantidadActualCell.innerText);
+                cantidadActual += requeridos;
+                cantidadActualCell.innerText = cantidadActual.toString();
+
+                // Dentro del evento click del botón "Agregar"
+                var requeridosInput = row.querySelector('.requeridos-input');
+                requeridosInput.setAttribute('max', cantidadActual.toString());
+
+                // Eliminar la fila de la tabla secundaria
+                tablaAgregados.deleteRow(this.parentNode.parentNode.rowIndex);
+
+                // Actualizar
+                document.getElementById("SubTotal").value = SubTotal.toFixed(2);
+                document.getElementById("Total").value = Total.toFixed(2);
+                document.getElementById("MontoDescuento").value = MontoDescuento.toFixed(2);
+
+                $.ajax({
+                    url: '/Caja/EliminarInventarioVentas',
+                    type: 'POST',
+                    data: {
+                        Identificador_Ventas: id_inventario_envio,
+                    },
+                    success: function (response) {
+                        // Manejar la respuesta del controlador
+                        console.log(response);
+                    },
+                    error: function (xhr, status, error) {
+                        // Manejar los errores
+                        console.error(error);
+                    }
+                });
+
+            });
+
+            // Actualizar
+            document.getElementById("SubTotal").value = SubTotal.toFixed(2);
+            document.getElementById("Total").value = Total.toFixed(2);
+            document.getElementById("MontoDescuento").value = MontoDescuento.toFixed(2);
+        });
+    });
+</script>
+
+

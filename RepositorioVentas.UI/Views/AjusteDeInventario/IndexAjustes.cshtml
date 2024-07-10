@@ -1,0 +1,68 @@
+﻿@model IEnumerable<RepositorioVentas.UI.Models.AjusteDeInventario>
+@{
+    ViewData["Title"] = "IndexAjustes";
+}
+
+<h1>Lista De Ajustes</h1>
+
+<p>
+    <a asp-action="Index">Volver a la Lista</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.CantidadActual)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Tipo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Ajuste)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Fecha)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserId)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CantidadActual)
+                </td>
+                <td>
+                    @{
+                        string tipoTexto = string.Empty;
+                        if (item.Tipo == 1)
+                        {
+                            tipoTexto = "Aumento";
+                        }
+                        else if (item.Tipo == 2)
+                        {
+                            tipoTexto = "Disminucion";
+                        }
+                        @tipoTexto
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Ajuste)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Fecha)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UserId)
+                </td>
+                <td>
+                    @Html.ActionLink("Detalles", "Details", new { Id = item.Id })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

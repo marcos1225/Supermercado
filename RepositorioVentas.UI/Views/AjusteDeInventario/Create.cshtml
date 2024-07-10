@@ -1,0 +1,67 @@
+﻿@model RepositorioVentas.UI.Models.AjusteDeInventario
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h4>Ajuste De Inventario</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Id_Inventario" class="control-label"></label>
+                <input asp-for="Id_Inventario" class="form-control" hidden />
+                <span asp-validation-for="Id_Inventario" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CantidadActual" class="control-label"></label>
+                <input asp-for="CantidadActual" class="form-control" readonly />
+                <span asp-validation-for="CantidadActual" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Ajuste" class="control-label"></label>
+                <input asp-for="Ajuste" class="form-control" />
+                <span asp-validation-for="Ajuste" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Tipo" class="control-label"></label>
+                <select asp-for="Tipo" class="form-control" required>
+                    <option value="">Seleccione</option>
+                    <option value="1">Aumento</option>
+                    <option value="2">Disminucion</option>
+                </select>
+                <span asp-validation-for="Tipo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Observaciones" class="control-label"></label>
+                <input asp-for="Observaciones" class="form-control" />
+                <span asp-validation-for="Observaciones" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Fecha" class="control-label"></label>
+                <input asp-for="Fecha" class="form-control" readonly />
+                <span asp-validation-for="Fecha" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="UserId" class="control-label"></label>
+                <input asp-for="UserId" class="form-control" readonly />
+                <span asp-validation-for="UserId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Agregar Ajuste" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Regresar Al Inventario</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

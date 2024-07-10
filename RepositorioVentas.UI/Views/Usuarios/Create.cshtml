@@ -1,0 +1,149 @@
+﻿@model RepositorioVentas.UI.Models.Usuario
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link href="~/css/login.css" rel="stylesheet" />
+    <style>
+        body {
+            position: relative;
+            z-index: 0;
+        }
+
+        .blue-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: white;
+            opacity: 0.8;
+            z-index: -1;
+        }
+
+        .content-wrapper {
+            position: relative;
+            z-index: 1;
+        }
+
+        .navbar {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="blue-background"></div>
+    <div class="content-wrapper">
+        <h1>Registrar Nuevo Usuario</h1>
+
+        <hr />
+        <div class="row justify-content-center">
+            <div class="col-md-4">
+                @* Mostrar el resumen de errores de validación *@
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                <form id="registrationForm" asp-action="Create" method="post">
+                    @Html.AntiForgeryToken()
+
+                    <div class="form-group">
+                        <label asp-for="UserName">Usuario</label>
+                        <input asp-for="UserName" class="form-control" />
+                        <span asp-validation-for="UserName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Email">Email</label>
+                        <input asp-for="Email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="PasswordHash">Contraseña</label>
+                        <input type="password" id="password" asp-for="PasswordHash" class="form-control" />
+                        <span asp-validation-for="PasswordHash" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="PasswordHash">Confirmar Contraseña</label>
+                        <input type="password" id="confirmPassword" class="form-control" />
+                        <span id="confirmPasswordError" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="submit" value="Registrar" class="btn btn-primary" />
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div>
+            <a asp-action="Index">Volver al inicio de sesion</a>
+        </div>
+    </div>
+
+    @section Scripts {
+        @{
+            await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        }
+        <script>
+            document.getElementById("registrationForm").addEventListener("submit", function (event) {
+                var password = document.getElementById("password").value;
+                var confirmPassword = document.getElementById("confirmPassword").value;
+                var confirmPasswordError = document.getElementById("confirmPasswordError");
+                if (password !== confirmPassword) {
+                    confirmPasswordError.textContent = "Las contraseñas no coinciden";
+                    event.preventDefault();
+                } else if (!isFormValid()) {
+                    event.preventDefault();
+                } else {
+                    confirmPasswordError.textContent = "";
+                    var form = document.getElementById("registrationForm");
+                    var usernameInput = document.getElementById("UserName");
+                    var username = usernameInput.value.trim();
+
+                    // Validar si el nombre de usuario ya existe en la base de datos
+                    fetch(`/Usuarios/BuscarUsuariosRegistrados?username=${username}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.exists) {
+                                var errorMessage = document.createElement("span");
+                                errorMessage.textContent = "Nombre de usuario no disponible, por favor intenta con otro";
+                                errorMessage.classList.add("text-danger");
+                                form.appendChild(errorMessage);
+                            } else {
+                                // Eliminar cualquier mensaje de error existente
+                                var errorMessages = form.getElementsByClassName("text-danger");
+                                for (var i = 0; i < errorMessages.length; i++) {
+                                    errorMessages[i].remove();
+                                }
+
+                                // Agregar mensaje de éxito
+                                var successMessage = document.createElement("span");
+                                successMessage.textContent = "El usuario se ha registrado correctamente.";
+                                successMessage.classList.add("text-success");
+                                form.appendChild(successMessage);
+                                form.submit(); // Enviar el formulario si el nombre de usuario es válido
+                            }
+                        });
+                }
+            });
+
+            function isFormValid() {
+                var formInputs = document.querySelectorAll("#registrationForm input");
+                var isValid = true;
+                for (var i = 0; i < formInputs.length; i++) {
+                    if (formInputs[i].value.trim() === "") {
+                        isValid = false;
+                        break;
+                    }
+                }
+                return isValid;
+            }
+        </script>
+    }
+</body>
+</html>
